@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>귀차나 · 오늘의 픽</title>
+<meta name="description" content="세상 모든 귀찮음 → 3분 지름길. 귀차나가 직접 찾은 자취 꿀템 모음.">
+<meta property="og:title" content="귀차나 · 오늘의 픽">
+<meta property="og:description" content="세상 모든 귀찮음 → 3분 지름길. 자취 꿀템 모음.">
+<meta property="og:image" content="assets/avatar.jpg">
+<link rel="icon" href="assets/avatar.jpg">
+<style>
+  :root{
+    --ink:#2b2b2b; --sub:#8a8a8a; --line:#ececec; --bg:#f6f5f2;
+    --blue:#4a7ca8; --blueink:#3a678d; --card:#ffffff; --chip:#f0efeb;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:520px;margin:0 auto;padding:0 16px 56px}
+  /* header */
+  header{text-align:center;padding:32px 0 14px}
+  .avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;
+    border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.10)}
+  .handle{font-weight:800;font-size:20px;margin:12px 0 2px;letter-spacing:-.01em}
+  .tag{color:var(--sub);font-size:14px;margin:0}
+  .socials{display:flex;gap:8px;justify-content:center;margin:14px 0 0}
+  .socials a{font-size:13px;color:var(--blueink);text-decoration:none;
+    border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-weight:600}
+  /* search + chips */
+  .tools{position:sticky;top:0;background:linear-gradient(var(--bg) 72%,rgba(246,245,242,0));
+    padding:14px 0 8px;z-index:5}
+  .search{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;
+    padding:12px 14px;font-size:15px;outline:none}
+  .search:focus{border-color:var(--blue)}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{white-space:nowrap;border:1px solid var(--line);background:var(--chip);
+    color:#555;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* cards */
+  .list{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .card{display:flex;gap:13px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:12px;text-decoration:none;color:inherit;
+    transition:transform .08s ease,box-shadow .15s ease}
+  .card:active{transform:scale(.99)}
+  .card:hover{box-shadow:0 6px 18px rgba(0,0,0,.07)}
+  .thumb{width:88px;height:88px;flex:0 0 88px;border-radius:12px;object-fit:cover;background:#eee}
+  .body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .badge{font-size:11px;color:var(--blueink);font-weight:700;margin:0 0 3px}
+  .title{font-size:15px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:auto}
+  .prod{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .price{font-size:15px;font-weight:800;color:var(--blueink);margin-left:auto;white-space:nowrap}
+  .cta{display:inline-block;margin-top:7px;font-size:12px;color:#fff;background:var(--blue);
+    border-radius:999px;padding:5px 12px;font-weight:700;align-self:flex-start}
+  .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:14px}
+  footer{text-align:center;color:var(--sub);font-size:11px;margin-top:26px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="avatar" src="assets/avatar.jpg" alt="귀차나">
+    <h1 class="handle">귀차나</h1>
+    <p class="tag">세상 모든 귀찮음 → 3분 지름길 · 자취 꿀템</p>
+    <div class="socials">
+      <a href="https://www.instagram.com/gwichana.pick/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.threads.com/@gwichana.pick" target="_blank" rel="noopener">Threads</a>
+    </div>
+  </header>
+
+  <div class="tools">
+    <input id="q" class="search" type="search" placeholder="🔎 제품·주제 검색 (예: 에어컨)" autocomplete="off">
+    <div id="chips" class="chips"></div>
+  </div>
+
+  <div id="list" class="list"></div>
+  <p id="empty" class="empty" hidden>검색 결과가 없어요. 다른 키워드로 찾아보세요.</p>
+
+  <footer>
+    ※ 쿠팡 파트너스 활동으로 일정액의 수수료를 제공받을 수 있습니다.<br>
+    © 2026 귀차나 (gwichana.pick)
+  </footer>
+</div>
+
+<script>
+const won = n => Number(n).toLocaleString('ko-KR') + '원';
+let ALL = [], cat = '전체', kw = '';
+
+function render(){
+  const list = document.getElementById('list');
+  const q = kw.trim().toLowerCase();
+  const rows = ALL.filter(p=>{
+    const okCat = cat==='전체' || p.category===cat;
+    const hay = (p.title+' '+p.product+' '+(p.tags||[]).join(' ')).toLowerCase();
+    const okKw = !q || hay.includes(q);
+    return okCat && okKw;
+  });
+  document.getElementById('empty').hidden = rows.length>0;
+  list.innerHTML = rows.map(p=>`
+    <a class="card" href="${p.url}" target="_blank" rel="noopener sponsored" data-id="${p.id}">
+      <img class="thumb" src="${p.thumb}" alt="" loading="lazy">
+      <div class="body">
+        <p class="badge">${p.category} · ${p.date}</p>
+        <p class="title">${p.title}</p>
+        <div class="meta">
+          <span class="prod">${p.product}</span>
+          <span class="price">${won(p.price)}</span>
+        </div>
+        <span class="cta">쿠팡에서 보기 →</span>
+      </div>
+    </a>`).join('');
+}
+
+function buildChips(){
+  const cats = ['전체', ...[...new Set(ALL.map(p=>p.category))]];
+  const box = document.getElementById('chips');
+  box.innerHTML = cats.map(c=>`<span class="chip${c===cat?' on':''}" data-c="${c}">${c}</span>`).join('');
+  box.querySelectorAll('.chip').forEach(el=>el.onclick=()=>{
+    cat = el.dataset.c;
+    box.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x.dataset.c===cat));
+    render();
+  });
+}
+
+document.getElementById('q').addEventListener('input', e=>{ kw=e.target.value; render(); });
+
+fetch('products.json?v='+Date.now())
+  .then(r=>r.json())
+  .then(data=>{
+    ALL = data.sort((a,b)=> (b.date>a.date?1:b.date<a.date?-1:0)); // 최신 맨 위
+    buildChips(); render();
+  })
+  .catch(()=>{ document.getElementById('empty').hidden=false;
+    document.getElementById('empty').textContent='목록을 불러오지 못했어요.'; });
+</script>
+</body>
+</html>
